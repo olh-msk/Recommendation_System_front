@@ -10,3 +10,10 @@ export interface CreateStudentDto {
   gpa: number;
   interestTagIds: number[];
 }
+
+export interface UpdateStudentDto {
+  id: number;
+  fullName: string;
+  gpa: number;
+  interestIds: number[];
+}

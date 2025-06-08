@@ -1,13 +1,11 @@
 import axiosClient from './axiosClient';
-import type { EnrollmentDto, CreateEnrollmentDto } from '../types/Enrollment';
+import type { EnrollmentDto } from '../types/Enrollment';
 
 export const getAllEnrollments = async (): Promise<EnrollmentDto[]> => {
-  const response = await axiosClient.get('/Enrollment');
-  return response.data;
+  const res = await axiosClient.get('/Enrollment');
+  return res.data;
 };
 
-export const createEnrollment = async (
-  data: CreateEnrollmentDto
-): Promise<void> => {
-  await axiosClient.post('/Enrollment', data);
+export const deleteEnrollment = async (id: number) => {
+  await axiosClient.delete(`/Enrollment/${id}`);
 };

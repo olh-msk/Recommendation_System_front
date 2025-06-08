@@ -1,27 +1,25 @@
 import { useEffect, useState } from 'react';
 import { getRecommendations } from '../api/recommendationApi';
 import type { CourseDto } from '../types/Course';
-import { CourseCard } from '../components/CourseCard';
+import CourseCard from '../components/CourseCard';
 
-export default function Recommendations() {
+const Recommendations = () => {
   const [courses, setCourses] = useState<CourseDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [studentId] = useState(1); // тимчасово статично
 
   useEffect(() => {
-    getRecommendations(studentId)
-      .then(setCourses)
-      .finally(() => setLoading(false));
-  }, [studentId]);
+    getRecommendations(1).then(setCourses).catch(console.error);
+  }, []);
 
   return (
-    <div>
+    <div className="page-container">
       <h1>Рекомендовані курси</h1>
-      {loading ? (
-        <p>Завантаження...</p>
-      ) : (
+      {courses.length > 0 ? (
         courses.map((course) => <CourseCard key={course.id} course={course} />)
+      ) : (
+        <p>Немає доступних курсів</p>
       )}
     </div>
   );
-}
+};
+
+export default Recommendations;

@@ -1,64 +1,110 @@
-import { useState, useEffect } from 'react';
-import axiosClient from '../api/axiosClient';
-import type { CreateStudentDto } from '../types/Student';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 export default function StudentForm({ onSubmit }: { onSubmit: () => void }) {
   const [fullName, setFullName] = useState('');
-  const [gpa, setGpa] = useState(0);
+  const [gpa, setGpa] = useState<number>(3.0);
   const [interests, setInterests] = useState<number[]>([]);
-  const [availableTags, setAvailableTags] = useState<
-    { id: number; name: string }[]
-  >([]);
+  const [availableTags, setAvailableTags] = useState<InterestTagDto[]>([]);
+  const [role, setRole] = useState<'Student' | 'Teacher'>('Student');
 
   useEffect(() => {
-    axiosClient.get('/InterestTag').then((res) => setAvailableTags(res.data));
+    getInterestTags()
+      .then(setAvailableTags)
+      .catch(() => setAvailableTags([]));
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const dto: CreateStudentDto = {
       fullName,
       gpa,
       interestTagIds: interests,
+      role,
     };
-    axiosClient.post('/Student', dto).then(onSubmit);
+    try {
+      await registerStudent(dto);
+      onSubmit();
+    } catch (err) {
+      console.error('Registration failed', err);
+      alert('Не вдалося створити користувача');
+    }
   };
 
   return (
-    <div>
-      <h2>Реєстрація студента</h2>
-      <input
-        value={fullName}
-        onChange={(e) => setFullName(e.target.value)}
-        placeholder="ПІБ"
-      />
-      <input
-        type="number"
-        value={gpa}
-        onChange={(e) => setGpa(parseFloat(e.target.value))}
-        placeholder="GPA"
-      />
+    <Paper sx={{ p: 3 }} elevation={3}>
+      <Typography variant="h5" gutterBottom>
+        Реєстрація
+      </Typography>
 
-      <fieldset>
-        <legend>Інтереси:</legend>
-        {availableTags.map((tag) => (
-          <label key={tag.id}>
-            <input
-              type="checkbox"
-              checked={interests.includes(tag.id)}
-              onChange={() => {
-                setInterests((prev) =>
-                  prev.includes(tag.id)
-                    ? prev.filter((id) => id !== tag.id)
-                    : [...prev, tag.id]
-                );
-              }}
-            />
-            {tag.name}
-          </label>
-        ))}
-      </fieldset>
+      <Stack spacing={2}>
+        <TextField
+          label="Повне ім’я"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          fullWidth
+        />
 
-      <button onClick={handleSubmit}>Створити</button>
-    </div>
+        <TextField
+          label="GPA"
+          type="number"
+          inputProps={{ step: 0.01 }}
+          value={gpa}
+          onChange={(e) => setGpa(parseFloat(e.target.value))}
+        />
+
+        <FormControl fullWidth>
+          <InputLabel id="role-label">Роль</InputLabel>
+          <Select
+            labelId="role-label"
+            value={role}
+            label="Роль"
+            onChange={(e) => setRole(e.target.value as any)}
+          >
+            <MenuItem value="Student">Student</MenuItem>
+            <MenuItem value="Teacher">Teacher</MenuItem>
+          </Select>
+        </FormControl>
+
+        <div>
+          <Typography variant="subtitle1" sx={{ mb: 1 }}>
+            Інтереси
+          </Typography>
+          <FormGroup row>
+            {availableTags.map((tag) => (
+              <FormControlLabel
+                key={tag.id}
+                control={
+                  <Checkbox
+                    checked={interests.includes(tag.id)}
+                    onChange={() => {
+                      setInterests((prev) =>
+                        prev.includes(tag.id)
+                          ? prev.filter((id) => id !== tag.id)
+                          : [...prev, tag.id]
+                      );
+                    }}
+                  />
+                }
+                label={tag.name}
+              />
+            ))}
+          </FormGroup>
+        </div>
+
+        <Button variant="contained" onClick={handleSubmit}>
+          Створити
+        </Button>
+      </Stack>
+    </Paper>
   );
 }

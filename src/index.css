@@ -25,8 +25,8 @@ nav a:hover {
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9f9f9;
-  color: #222;
+  background-color: #f4f6f8;
+  color: #111827;
 }
 
 h1 {
@@ -34,16 +34,95 @@ h1 {
 }
 
 button {
-  background-color: #61dafb;
-  color: black;
+  background-color: #2563eb;
+  color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 button:hover {
-  background-color: #21a1f1;
+  background-color: #1e40af;
+}
+
+input,
+textarea,
+select {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Layout helpers */
+.page-container {
+  max-width: 980px;
+  margin: 24px auto;
+  padding: 24px;
+}
+
+.form-container {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  margin-bottom: 16px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.06);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.card h3 {
+  margin: 0 0 8px 0;
+}
+
+.chip {
+  display: inline-block;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 8px;
+  border-radius: 999px;
+  margin-right: 8px;
+  font-size: 0.85rem;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  margin-right: 18px;
+}
+
+.main-header nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }

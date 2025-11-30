@@ -12,3 +12,14 @@ export interface CreateCourseDto {
   creditHours: number;
   tagIds: number[]; // це і є interestTagIds
 }
+
+export interface RecommendationDto {
+  courseId: number;
+  title: string;
+  shortDescription?: string;
+  description?: string;
+  creditHours?: number;
+  tags?: string[];
+  score?: number;
+  reason?: string;
+}

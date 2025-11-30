@@ -1,39 +1,67 @@
 // src/pages/Profile.tsx
-import { useEffect, useState } from 'react';
-import { getStudentById, updateStudent } from '../api/studentApi';
-import type { StudentDto } from '../types/Student';
+import { useState } from 'react';
+import { useAuth } from '../auth/AuthContext';
+import { updateStudent } from '../api/studentApi';
+import type { UpdateStudentDto } from '../types/Student';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 export default function Profile() {
-  const studentId = Number(localStorage.getItem('studentId'));
-  const [student, setStudent] = useState<StudentDto | null>(null);
-  const [gpa, setGpa] = useState('');
+  const { user, login } = useAuth();
+  const [fullName, setFullName] = useState(user?.fullName ?? '');
+  const [gpa, setGpa] = useState(user?.gpa?.toString() ?? '');
 
-  useEffect(() => {
-    getStudentById(studentId).then((s) => {
-      setStudent(s);
-      setGpa(s.gpa.toString());
-    });
-  }, [studentId]);
+  if (!user) return <Typography>Будь ласка, увійдіть</Typography>;
 
   const handleSave = async () => {
-    if (!student) return;
-    await updateStudent({
-      ...student,
+    const dto: UpdateStudentDto = {
+      id: user.id,
+      fullName,
       gpa: parseFloat(gpa),
-    });
-    alert('Збережено');
+      interestIds: [],
+    };
+    try {
+      await updateStudent(dto);
+      // update local context user copy
+      login({ ...user, fullName, gpa: parseFloat(gpa) }, null);
+      alert('Збережено');
+    } catch (err) {
+      console.error(err);
+      alert('Не вдалося зберегти');
+    }
   };
 
-  return student ? (
-    <div>
-      <h1>Профіль студента</h1>
-      <p>Імʼя: {student.fullName}</p>
-      <label>
-        GPA: <input value={gpa} onChange={(e) => setGpa(e.target.value)} />
-      </label>
-      <button onClick={handleSave}>Зберегти</button>
-    </div>
-  ) : (
-    <p>Завантаження...</p>
+  return (
+    <Container maxWidth="sm" sx={{ mt: 6 }}>
+      <Paper sx={{ p: 3 }} elevation={3}>
+        <Typography variant="h4" gutterBottom>
+          Профіль
+        </Typography>
+
+        <Stack spacing={2}>
+          <TextField
+            label="Повне імʼя"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            fullWidth
+          />
+
+          <TextField
+            label="GPA"
+            value={gpa}
+            onChange={(e) => setGpa(e.target.value)}
+            fullWidth
+          />
+
+          <Button variant="contained" onClick={handleSave}>
+            Зберегти
+          </Button>
+        </Stack>
+      </Paper>
+    </Container>
   );
 }

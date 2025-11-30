@@ -16,7 +16,7 @@ export const registerStudent = async (
 ): Promise<number> => {
   const response = await axiosClient.post('/Student', dto);
   // Припускаємо, що бек повертає весь об’єкт або хоча б id
-  return response.data.id ?? 1;
+  return response.data.id ?? response.data?.student?.id ?? 1;
 };
 
 export const getStudentById = async (id: number): Promise<StudentDto> => {

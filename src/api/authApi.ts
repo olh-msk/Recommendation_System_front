@@ -1,19 +1,14 @@
 // src/api/authApi.ts
 import axiosClient from './axiosClient';
-import type { StudentDto } from '../types/Student';
+import type { LoginDto, RegisterDto, AuthResponse } from '../types/Auth';
 
-export const loginStudent = async (fullName: string): Promise<StudentDto> => {
-  const response = await axiosClient.get(
-    `/Student/login/${encodeURIComponent(fullName)}`
-  );
+// Auth endpoints according to provided OpenAPI
+export const login = async (credentials: LoginDto): Promise<AuthResponse> => {
+  const response = await axiosClient.post('/Auth/login', credentials);
   return response.data;
 };
 
-export const registerStudent = async (student: {
-  fullName: string;
-  gpa: number;
-  interestTagIds: number[];
-}): Promise<StudentDto> => {
-  const response = await axiosClient.post('/Student', student);
+export const register = async (payload: RegisterDto): Promise<AuthResponse> => {
+  const response = await axiosClient.post('/Auth/register', payload);
   return response.data;
 };

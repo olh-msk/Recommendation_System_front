@@ -1,5 +1,10 @@
 // src/App.tsx
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from 'react-router-dom';
 import Recommendations from './pages/Recommendations';
 import AllCourses from './pages/AllCourses';
 import Students from './pages/Students';
@@ -14,7 +19,7 @@ export default function App() {
     <Router>
       <Layout>
         <Routes>
-          <Route path="/" element={<Recommendations />} />
+          <Route path="/" element={<Navigate to="/courses" replace />} />
           <Route path="/courses" element={<AllCourses />} />
           <Route path="/students" element={<Students />} />
           <Route path="/enrollments" element={<Enrollments />} />
